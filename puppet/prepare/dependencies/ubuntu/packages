@@ -1,0 +1,10 @@
+git-core
+build-essential
+curl
+whois
+openssl
+libxslt1-dev
+autoconf
+bison
+libreadline5
+libsqlite3-dev

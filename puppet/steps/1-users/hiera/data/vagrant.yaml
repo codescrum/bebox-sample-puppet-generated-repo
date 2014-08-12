@@ -1,0 +1,11 @@
+user_accounts:
+  - name:   'sample-puppet-generated-repo'
+    email:  ''
+    key:    'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCaysanIJ3dzoXnz4EW317NPTud+u8uDMAwLEiZAYGBibVbasgXHbxX9OSyqyFddVNrrA6n14Mt93Hf/NjsulXtLZ5IPQvFcNZDekVHD5+Ea4IHksmGGiw6GY8cUhvd9JotYkdSYEc0dkBUl3aKT2RaB7Negaa3WqVDaQuFUOwWslkdlf2hNz0XuK9QDT+lWJ+t06aCL0ZxKGmrQnUDEvXrgc3bdczksd/x5SZ4Z0HhcRkpF03q+bhC3PbcoB4EMLILTFg7zIskLY73zqb3YXbeGguRd2VwrgaosBMoQedpgUnVDa5pTE3us67FBW35nIixV6kyVxP09dqO8b+6gAP johan.tique@codescrums-iMac.local'
+    uid:    7001
+# Add rules to permit ssh forward agent to github repositories
+ssh::client_rules:
+  'Host github.com':
+    'User' : 'sample-puppet-generated-repo'
+    'ForwardAgent': 'yes'
+    'StrictHostKeyChecking': 'no'

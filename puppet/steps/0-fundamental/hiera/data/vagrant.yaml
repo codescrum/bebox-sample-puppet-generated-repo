@@ -1,0 +1,26 @@
+user_accounts:
+  - name:  'puppet'
+    email:  ''
+    key:  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCaysanIJ3dzoXnz4EW317NPTud+u8uDMAwLEiZAYGBibVbasgXHbxX9OSyqyFddVNrrA6n14Mt93Hf/NjsulXtLZ5IPQvFcNZDekVHD5+Ea4IHksmGGiw6GY8cUhvd9JotYkdSYEc0dkBUl3aKT2RaB7Negaa3WqVDaQuFUOwWslkdlf2hNz0XuK9QDT+lWJ+t06aCL0ZxKGmrQnUDEvXrgc3bdczksd/x5SZ4Z0HhcRkpF03q+bhC3PbcoB4EMLILTFg7zIskLY73zqb3YXbeGguRd2VwrgaosBMoQedpgUnVDa5pTE3us67FBW35nIixV6kyVxP09dqO8b+6gAP johan.tique@codescrums-iMac.local'
+    uid:  7000
+sudo::configs:
+  'puppet':
+    ensure:  'present'
+    content:  '%puppet ALL=(ALL) NOPASSWD: ALL'
+    priority:  10
+rbenv::install:
+    user:  'puppet'
+    group:  'puppet'
+    home:  '/home/puppet'
+rbenv::compile:
+    "1.9.3-p327":
+        user:  "puppet"
+        home:  "/home/puppet"
+        global:  true
+rbenv::gem:
+    'puppet':
+        user:  'puppet'
+        ruby:  '1.9.3-p327'
+    'librarian-puppet':
+        user:  'puppet'
+        ruby:  '1.9.3-p327'
