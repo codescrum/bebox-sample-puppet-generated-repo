@@ -8,3 +8,9 @@
 # The role can be set to the node manually or through the
 # 'bebox node set_role' command.
 
+
+node node1.server1.test {
+
+  include roles::users
+
+}

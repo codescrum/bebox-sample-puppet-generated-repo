@@ -1,0 +1,26 @@
+user_accounts:
+  - name:  'puppet'
+    email:  ''
+    key:  'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCysGhgHwcQlGwrlfE/RU1Qw78AJCYb0uhJ3DTU4AwacvukSrPbGSKuatVofICU7wKTA6IN5sMyC2UVUTDSxKwQSda39CbEyzX+w3FYDY9nb/T12o6BOH6DXzEHzRt5hG/XGYtAZp6yAwA0y+LBuYEsLjlqnRxuPHtyw6poCyeZazxaRv0w14/ROLZaJ0n8ZLcReMtjcandTIroAuS5ulbwyVcKQptV6uCnVzGJJ0ehHQSGoAtOxRyIk6e68i++jf/Br0Z/H7mEnmI4ERfPj/wmHPqtNT690EtHhatrAzDa9f+dRknRSubDdo/78mVifu1nfh7fDQZJeZQFY5ta+rJZ example@bebox.local'
+    uid:  7000
+sudo::configs:
+  'puppet':
+    ensure:  'present'
+    content:  '%puppet ALL=(ALL) NOPASSWD: ALL'
+    priority:  10
+rbenv::install:
+    user:  'puppet'
+    group:  'puppet'
+    home:  '/home/puppet'
+rbenv::compile:
+    "1.9.3-p327":
+        user:  "puppet"
+        home:  "/home/puppet"
+        global:  true
+rbenv::gem:
+    'puppet':
+        user:  'puppet'
+        ruby:  '1.9.3-p327'
+    'librarian-puppet':
+        user:  'puppet'
+        ruby:  '1.9.3-p327'
