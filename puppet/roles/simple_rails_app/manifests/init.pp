@@ -11,4 +11,6 @@
 
 class roles::simple_rails_app {
 
+	include profiles::simple::ruby
+
 }
