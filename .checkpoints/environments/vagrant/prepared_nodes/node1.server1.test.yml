@@ -1,0 +1,4 @@
+hostname:     'node1.server1.test'
+ip:           '192.168.0.81'
+started_at:   '2014-08-12T17:45:38-05:00'
+finished_at:  '2014-08-12T17:52:03-05:00'
