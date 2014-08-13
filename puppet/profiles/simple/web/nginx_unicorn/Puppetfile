@@ -14,6 +14,9 @@
 # This are some common modules we have used and works well.
 # You can uncomment for use it or can add new ones.
 
+mod "puppetlabs/stdlib", '4.3.2'
+mod "puppetlabs/apt", '1.5.2'
+mod "puppetlabs/concat", '1.1.0'
 # mod "alup/rbenv", '1.2.0'
 # mod "jfryman/nginx", '0.0.9'
 # mod "dwerder/redis", '1.1.0'

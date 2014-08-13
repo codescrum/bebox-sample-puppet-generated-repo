@@ -1,1 +1,27 @@
-# Here you can set the hiera data to be used for your profiles
+rbenv::install:
+  user:  'simple_web_app'
+  group:  'simple_web_app'
+  home:  '/home/simple_web_app'
+rbenv::compile:
+  "1.9.3-p327":
+      user:  "simple_web_app"
+      home:  "/home/simple_web_app"
+      global:  true
+nginx::nginx_upstreams:
+  'simple_web_app':
+    members:
+      - 'unix:/tmp/simple_web_app.socket'
+nginx::nginx_vhosts:
+  'simple_web_app.server1.test':
+    ensure: 'present'
+    listen_port:  80
+    www_root: '/home/simple_web_app/code/current/public'
+    access_log: '/var/log/nginx/simple_web_app_access.log'
+    error_log: '/var/log/nginx/simple_web_app_error.log'
+    ssl: false
+    use_default_location: false
+nginx::nginx_locations:
+  '/':
+    ensure: present
+    vhost: 'simple_web_app.server1.test'
+    proxy: 'http://simple_web_app'

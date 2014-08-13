@@ -1,0 +1,46 @@
+#!/bin/bash
+
+### BEGIN INIT INFO
+# Provides:          APPLICATION
+# Required-Start:    $all
+# Required-Stop:     $network $local_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start the APPLICATION unicorns at boot
+# Description:       Enable APPLICATION at boot time.
+### END INIT INFO
+
+USER="<%= @user %>"
+APP_NAME="<%= @appname %>"
+APP_ROOT="<%= @approot %>"
+PIDFILE="/tmp/unicorn.${APP_NAME}.pid"
+
+start() {
+  su - $USER -c "cd ${APP_ROOT}; bundle exec unicorn_rails -c config/unicorn.rb -D"
+}
+
+stop() {
+  su - $USER -c "kill -s QUIT `cat ${PIDFILE}`"
+}
+
+restart() {
+  su - $USER -c "kill -s USR2 `cat ${PIDFILE}`"
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}" >&2
+        exit 1
+        ;;
+esac
+
+exit $RETVAL
