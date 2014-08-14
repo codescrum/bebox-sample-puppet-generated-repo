@@ -22,6 +22,12 @@ plus:
 * [Virtualbox](https://www.virtualbox.org/wiki/Downloads) installed.
 * [ubuntu-server-12042-x64-vbox4210-nocm.box](http://puppet-vagrant-boxes.puppetlabs.com/ubuntu-server-12042-x64-vbox4210-nocm.box) downloaded.
 
+#### Bebox demo
+
+You can see a bebox demo video for a complete example of provisioning a machine with this example code and deploying a rails application in it.
+
+[![bebox demo video](http://img.youtube.com/vi/mioeMsuKJr4/0.jpg)](http://www.youtube.com/watch?v=mioeMsuKJr4)
+
 ###Setup
 
 **Clone the application**
