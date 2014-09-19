@@ -1,0 +1,6 @@
+forge "https://forgeapi.puppetlabs.com"
+
+mod "puppetlabs/stdlib", '4.3.2'
+mod "puppetlabs/apt", '1.5.2'
+mod "puppetlabs/concat", '1.1.0'
+mod "alup/rbenv", '1.2.0'
