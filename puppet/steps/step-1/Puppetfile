@@ -1,0 +1,3 @@
+forge "https://forgeapi.puppetlabs.com"
+
+mod "saz/ssh", '2.3.6'
