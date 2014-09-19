@@ -29,6 +29,7 @@ set :ssh_options, {
 }
 
 # Start nodes definitions
+  server "node1.server1.test", :web, :app, :db
 # End nodes definitions
 
 desc 'Test the vagrant connection by doing issuing a simple echo command'
