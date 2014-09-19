@@ -1,0 +1,124 @@
+
+set :application, "sample-puppet-generated-repo"
+set :environment, environment
+set :use_sudo, false
+set :keep_releases, 3
+set :deploy_via, :remote_cache
+default_run_options[:pty] = true
+default_run_options[:shell] = '/bin/bash --login'
+set :normalize_asset_timestamps, false
+set(:facter_variables) { {deploy_environment: environment, deploy_user: user, deploy_to: deploy_to} }
+
+before 'puppet:apply', 'puppet:config_hiera'
+
+# evaluate if a file exists in a remote server
+def remote_file_exists?(full_path)
+  'true' ==  capture("if [ -e #{full_path} ]; then echo 'true'; fi").strip
+end
+
+# When using puppet apply for example, pass additional facts to Facter
+# @returns an environment variable string like FACTER_custom
+def custom_facter_variables
+  facter_variables.map{|facter_key, facter_value| "FACTER_#{facter_key}=#{facter_value}"}.join(' ')
+end
+
+# load specific environment recipe
+load "config/environments/#{environment}/deploy.rb"
+
+# load specific task from each step
+load "config/environments/#{environment}/steps/#{phase}" if phase =~ /step/
+
+namespace :deploy do
+
+	desc 'Installs tools and required dependencies in the remote machine'
+	namespace :prepare_installation do
+
+	  desc 'Install dependencies and command line tools to operate correctly'
+	  task :common do
+	    ubuntu.setup
+	    dependencies
+	  end
+
+    desc 'Install puppet on the remote machine (free-standalone) [including dependencies]'
+    task :puppet do
+      run "#{sudo} apt-get --yes --fix-broken install"
+      run "cd #{current_path}/lib/deb/puppet_3.6.0 && #{sudo} dpkg -i *.deb"
+    end
+
+	  desc 'Install libraries'
+	  task :dependencies do
+	    run "#{sudo} aptitude update"
+	    run "cd #{current_path}/prepare/dependencies/ubuntu && cat packages|xargs #{sudo} aptitude -y install"
+	  end
+	end
+  namespace :ubuntu do
+    desc 'Install dependencies and command line tools to opperate correctly'
+    task :setup do
+      install_aptitude
+      set_fqdn
+    end
+
+    desc 'Install aptitude'
+    task :install_aptitude do
+      run "#{sudo} apt-get update"
+      run "#{sudo} apt-get -y install aptitude"
+      # run "#{sudo} aptitude -y full-upgrade"
+    end
+
+    desc "Sets the boxes' fully qualified domain name (fqdn), through the 'hostname' command"
+    task :set_fqdn do
+      run('hostname') do |ch, stream, out|
+        if ch[:server].host.strip == out.strip
+          puts "The #{ch[:server]} server hostname is configured properly"
+        else
+          run "#{sudo} hostname #{ch[:server].host}", hosts: ch[:server]
+        end
+      end
+    end
+  end
+end
+
+namespace :puppet do
+
+  desc 'Bundle modules listed in the Puppetfile through librarian-puppet'
+  task :bundle_modules do
+    librarian_path = "#{shared_path}/librarian-puppet/#{step_dir}"
+    step_path = "#{current_path}/steps/#{step_dir}"
+    # Create shared directories for librarian-puppet
+    run "mkdir -p #{librarian_path}/{modules,.tmp}"
+    # Check if Puppetfile.lock and .tmp are created for librarian-puppet
+    puppetfile_lock = remote_file_exists?("#{librarian_path}/Puppetfile.lock")
+    librarian_tmp = remote_file_exists?("#{step_path}/.tmp")
+    # Link the modules directory from shared to the step directory
+    run "cp -Rf #{step_path}/modules/* #{librarian_path}/modules/"
+    run "rm -rf #{step_path}/modules"
+    run "ln -fs #{librarian_path}/modules #{step_path}/modules"
+    if remote_file_exists?("#{step_path}/Puppetfile")
+      # Move the Puppetfile.lock create the first time
+      run "ln -fs #{librarian_path}/Puppetfile.lock #{step_path}/Puppetfile.lock" if puppetfile_lock
+      # Link the .tmp directory from shared to the step directory
+      run "cp -Rf #{step_path}/.tmp/* #{librarian_path}/.tmp/" if librarian_tmp
+      run "rm -rf #{step_path}/.tmp"
+      run "ln -fs #{librarian_path}/.tmp #{step_path}/.tmp"
+      # Execute librarian-puppet module installation
+      run "cd #{step_path} && librarian-puppet install"
+      # Move the Puppetfile.lock create the first time
+      run "mv -f #{step_path}/Puppetfile.lock #{librarian_path}/" unless puppetfile_lock
+    end
+  end
+
+  desc 'Applies puppet using the current path puppet repo uploaded through capistrano itself'
+  task :apply do
+    run 'touch puppet.log'
+    run "echo 'Running puppet at #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}...' >> puppet.log"
+    run "#{sudo} #{custom_facter_variables} puppet apply --debug --verbose --modulepath=#{current_path}/steps/#{step_dir}/modules --parser future --pluginsync #{current_path}/steps/#{step_dir}/manifests/site.pp"
+  end
+
+  desc 'Make a symlink to configure the hiera settings from hiera project directory'
+  task :config_hiera do
+    remote_hiera_path = "/etc/puppet/hiera.yaml"
+    local_hiera_path = "#{current_path}/steps/#{step_dir}/hiera/hiera.yaml"
+    puts 'Creating the symlink to hiera.yaml!'
+    run "#{sudo} ln -fs #{local_hiera_path} #{remote_hiera_path}"
+  end
+end

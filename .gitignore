@@ -1,0 +1,15 @@
+.vagrant/
+.bundle/
+#
+# **************************************************************
+# Below files are gitignored by default in all bebox projects,
+# but for convinience of the example we leave it in the project.
+# **************************************************************
+#
+# .checkpoints/
+# config/**/keys/id_rsa
+# config/**/keys/id_rsa.pub
+# puppet/steps/step-0/hiera/data/
+# puppet/steps/step-1/hiera/data/
+# puppet/steps/step-2/hiera/data/
+# puppet/steps/step-3/hiera/data/

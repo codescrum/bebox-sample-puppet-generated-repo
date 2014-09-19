@@ -1,0 +1,4 @@
+project:              'bebox-sample-puppet-generated-repo'
+vagrant_box_base:     '~/.bebox/boxes/ubuntu-server-12042-x64-vbox4210-nocm.box'
+vagrant_box_provider: 'virtualbox'
+created_at:           '2014-09-19T16:24:56-05:00'
