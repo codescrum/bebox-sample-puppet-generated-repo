@@ -1,11 +1,11 @@
 user_accounts:
-  - name:   'sample-puppet-generated-repo'
+  - name:   'simple_web_app'
     email:  ''
     key:    'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCziM0Tl+oN0i8SCdSoWfZkQwagO9pEO9bL+boi670ckwdANIGSoN9+f0WR+dMXEwjn3+vnZ0foHPM6G+63DZ1jUHgGL4vQ+DctRRM+m8mtAEqozcXI1EMSc1WwVkBG8FBNaXOqQYfZpJhkCT8D5CUShBmCCjcbEzJEoeAbXQFM1Q=='
     uid:    7001
 # Add rules to permit ssh forward agent to github repositories
 ssh::client_rules:
   'Host github.com':
-    'User' : 'sample-puppet-generated-repo'
+    'User' : 'simple_web_app'
     'ForwardAgent': 'yes'
     'StrictHostKeyChecking': 'no'
