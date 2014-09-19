@@ -11,6 +11,8 @@
 
 class roles::simple_rails_app {
 
+	include profiles::simple::web::nginx_unicorn
+
 	include profiles::simple::ruby
 
 }
